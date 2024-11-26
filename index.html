@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação de Coleta de Dados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        section {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 800px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1, h2 {
+            margin: 0 0 15px;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        input {
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .warning {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Simulação de Coleta de Dados</h1>
+    </header>
+
+    <section id="formSection">
+        <h2>Preencha seus dados abaixo</h2>
+        <p>Esta página irá simular a coleta de informações, como nome, idade e dados de localização real.</p>
+        <p class="warning">Importante: Seus dados são utilizados para fins de demonstração apenas e não serão armazenados.</p>
+
+        <form id="dataForm">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" placeholder="Digite seu nome" required>
+
+            <label for="age">Idade:</label>
+            <input type="number" id="age" placeholder="Digite sua idade" required>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+
+    <section id="resultSection" style="display: none;">
+        <h2>Dados Capturados</h2>
+        <p>Confira abaixo os dados que foram coletados da sua navegação:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campo</th>
+                    <th>Informação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Nome</td>
+                    <td id="displayName"></td>
+                </tr>
+                <tr>
+                    <td>Idade</td>
+                    <td id="displayAge"></td>
+                </tr>
+                <tr>
+                    <td>Endereço IP</td>
+                    <td id="displayIP">Carregando...</td>
+                </tr>
+                <tr>
+                    <td>Localização</td>
+                    <td id="displayLocation">Carregando...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        © 2024 Simulação Educacional | Página criada para fins de demonstração.
+    </footer>
+
+    <script>
+        const form = document.getElementById("dataForm");
+        const formSection = document.getElementById("formSection");
+        const resultSection = document.getElementById("resultSection");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Dados inseridos pelo usuário
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+
+            // Atualizar os dados na tabela
+            document.getElementById("displayName").innerText = name;
+            document.getElementById("displayAge").innerText = age;
+
+            // Coletar IP real através de API externa (ipify ou ipinfo)
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("displayIP").innerText = data.ip;
+                });
+
+            // Coletar localização real através da API de geolocalização do navegador
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    // Usando a latitude e longitude para determinar a localização
+                    const location = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                    document.getElementById("displayLocation").innerText = location;
+                }, function(error) {
+                    document.getElementById("displayLocation").innerText = "Localização não disponível.";
+                });
+            }
+
+            // Trocar as seções
+            formSection.style.display = "none";
+            resultSection.style.display = "block";
+        });
+    </script>
+</body>
+</html>
